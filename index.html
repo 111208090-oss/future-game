@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 💖 Restart 人生模擬器 💖 🌸</title>
+    <style>
+        :root {
+            --primary: #FFB7B2; /* 櫻花粉 */
+            --secondary: #B5EAD7; /* 薄荷綠 */
+            --accent: #FFDAC1; /* 蜜桃桔 */
+            --sky-blue: #C7CEEA; /* 薰衣草藍 */
+            --text-dark: #6C5B7B; /* 溫柔深紫羅蘭 */
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, "Microsoft JhengHei";
+            /* 換成超夢幻馬卡龍漸層背景 */
+            background: linear-gradient(135deg, #FFE5EC 0%, #F0E6FF 50%, #E8F0FE 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #game-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            border-radius: 32px; /* 更圓潤的卡片 */
+            box-shadow: 0 15px 35px rgba(255, 183, 178, 0.4); /* 粉色暖系陰影 */
+            box-sizing: border-box;
+            border: 6px solid #ffffff;
+            position: relative;
+        }
+
+        /* 頂部可愛風標題 */
+        .header-zone {
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: var(--text-dark);
+            font-size: 30px;
+            margin: 0;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #FF9AA2, #B5EAD7, #C7CEEA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.05));
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #9B82AA;
+            letter-spacing: 1px;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        /* 可愛泡泡進度條 */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: #FFF0F5;
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 2px dashed #FFB7B2;
+        }
+        .progress-bar {
+            flex-grow: 1;
+            height: 14px;
+            background-color: #EFEFEF;
+            border-radius: 7px;
+            overflow: hidden;
+        }
+        #progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #FF9AA2, #FFDAC1, #B5EAD7, #C7CEEA);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #progress-text {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* 🌟 可愛紙娃娃預覽面板 🌟 */
+        .avatar-preview-box {
+            background: #FFFDF9; /* 溫暖奶油白 */
+            border-radius: 24px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border: 3px dashed #E8E7E3;
+        }
+        .visual-character {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%; /* 改成圓圓的大頭仔 */
+            background: linear-gradient(45deg, #FFD1DC, #FFDAC1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            border: 4px solid #fff;
+        }
+        .character-tag {
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: bold;
+            background: #F0E6FF;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 2px solid #E2D1F9;
+        }
+
+        /* 故事文字區塊（童話繪本感） */
+        #story-text {
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: left;
+            white-space: pre-line;
+            background: #FFFDF9;
+            padding: 22px;
+            border-radius: 20px;
+            border: 3px solid #FFDAC1; /* 溫柔蜜桃邊框 */
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+            font-weight: bold;
+            color: #554466;
+        }
+
+        /* 創角面板調整 */
+        .avatar-creator {
+            background: #FFFDF9;
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #E8F0FE;
+        }
+        .creator-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .creator-label {
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--text-dark);
+            width: 100px;
+            text-align: left;
+        }
+        .selector-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            justify-content: flex-end;
+        }
+        /* 可愛軟糖按鈕 */
+        .nav-btn {
+            background: #E8F0FE;
+            border: none;
+            color: #6C5B7B;
+            font-size: 15px;
+            font-weight: bold;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 0 #CBDCFA;
+        }
+        .nav-btn:hover { background: #FFB7B2; color: white; box-shadow: 0 3px 0 #EAA5A0; transform: translateY(-1px); }
+        .nav-btn:active { transform: translateY(2px); box-shadow: none; }
+        
+        .current-val {
+            font-size: 14px;
+            font-weight: bold;
+            min-width: 140px;
+            text-align: center;
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 14px;
+            border: 2px solid #E8F0FE;
+        }
+
+        /* 馬卡龍選項按鈕 */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .option-btn {
+            background-color: white;
+            border: 3px solid #EFEFEF;
+            padding: 16px 22px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 18px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            line-height: 1.5;
+            color: #554466;
+            box-shadow: 0 4px 0 #EEEEEE;
+        }
+        .option-btn:hover {
+            border-color: #FFB7B2;
+            background: #FFF5F5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #FFA29C;
+            color: #FF7575;
+        }
+        .option-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        #name-input {
+            padding: 12px;
+            width: 70%;
+            font-size: 16px;
+            font-weight: bold;
+            border: 3px solid #E8F0FE;
+            border-radius: 16px;
+            outline: none;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            background: #FFFDF9;
+        }
+        #name-input:focus { border-color: #FFB7B2; background: #ffffff; }
+
+        /* 可愛結果卡片 */
+        .result-card {
+            background: #ffffff;
+            border: 4px dashed #FFB7B2;
+            padding: 22px;
+            border-radius: 24px;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .badge-container {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .badge {
+            color: #554466;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .badge.avatar { background: #FFE5EC; border: 1px solid #FFC2D1; }
+        .badge.type { background: #E8F0FE; border: 1px solid #CBDCFA; }
+        .badge.job { background: #E8F5E9; border: 1px solid #C8E6C9; }
+        .badge.sdg { background: #FFF3E0; border: 1px solid #FFE0B2; }
+
+        /* 可愛能量計分條 */
+        .chart-section {
+            background: #FFFDF9;
+            padding: 15px;
+            border-radius: 18px;
+            margin-top: 15px;
+            border: 2px solid #FFF0F5;
+        }
+        .chart-row { margin: 12px 0; }
+        .chart-label { font-size: 13px; font-weight: bold; margin-bottom: 6px; color: var(--text-dark); }
+        .chart-bar-bg { width: 100%; height: 14px; background: #EFEFEF; border-radius: 7px; overflow: hidden; }
+        .chart-bar-fill { height: 100%; border-radius: 7px; width: 0%; transition: width 1s ease; }
+
+        /* 巨大軟糖大按鈕 */
+        .action-btn {
+            background: linear-gradient(135deg, #FF9AA2 0%, #FFB7B2 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 17px;
+            font-weight: bold;
+            border-radius: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            box-shadow: 0 5px 0 #EAA5A0;
+            transition: all 0.2s;
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #EAA5A0; opacity: 0.95; }
+        .action-btn:active { transform: translateY(5px); box-shadow: none; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="header-zone">
+        <h1 id="game-title">Restart 人生模擬器</h1>
+        <div class="subtitle">✨ 專屬你的未來繪本 ✕ SDGs 永續探險系統 ✨</div>
+    </div>
+
+    <!-- 🌟 可愛大頭貼預覽區塊 🌟 -->
+    <div class="avatar-preview-box" id="avatar-preview-zone">
+        <div class="visual-character" id="char-sprite">🦄</div>
+        <div class="character-tag" id="char-tag">萌新冒險家</div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar"><div id="progress"></div></div>
+        <div id="progress-text">0 / 12</div>
+    </div>
+
+    <div id="game-content">
+        <!-- 內容動態注入 -->
+    </div>
+</div>
+
+<script>
+// 可愛版外觀與穿搭資料庫
+const avatarOptions = {
+    hair: ["軟萌短髮", "夢幻雙馬尾", "帥氣蓬鬆波浪", "俐落丸子頭"],
+    cloth: ["溫柔小熊帽T", "乖巧學院風制服", "文青格子襯衫", "繽紛吊帶工人褲"],
+    item: ["微縮科技手環", "幸運草筆記本", "小黃鴨隨行杯", "復古圓框眼鏡"],
+    bg: ["糖果粉", "薄荷綠", "晴空藍", "布丁黃"]
+};
+
+// 可愛小貼圖與亮麗背景對應
+const visualMap = {
+    emojis: ["🧑‍開朗", "👧", "🧑‍🎤", "👱‍♀️"],
+    bgColors: [
+        "linear-gradient(45deg, #FFB7B2, #FFE5EC)",
+        "linear-gradient(45deg, #B5EAD7, #E8F5E9)",
+        "linear-gradient(45deg, #C7CEEA, #E8F0FE)",
+        "linear-gradient(45deg, #FFDAC1, #FFF3E0)"
+    ]
+};
+
+const gameData = {
+    scenes: [
+        {
+            id: "start",
+            title: "🌟 創造你的專屬角色 🌟",
+            text: "嗨！歡迎來到『Restart 人生模擬器』！\n這是一個能讓你重新做出有趣抉擇、寫出專屬故事的地方。\n\n在出發前，請幫自己的小化身捏個可愛造型並取個名字吧：",
+            type: "creator",
+            next: "q1"
+        },
+        {
+            id: "q1",
+            title: "🎈 第 1 題：熱鬧園園會的分工",
+            text: "班級要在園遊會擺攤。看著空缺的小組職責，你直覺最想加入哪一組呢？",
+            type: "choice",
+            options: [
+                { text: "🛠️ 工具裝配組：搬運活動器材、動手組裝大帳篷，並拉設現場發光的創意彩色小燈線路。", scores: { R: 2 } },
+                { text: "🎨 視覺美宣組：主導繪製大大的主題宣傳海報、設計專屬紀念徽章與大家要穿的衣服。", scores: { A: 2 } },
+                { text: "📢 歡樂營運組：負責和外面的店家談進貨成本、想出最厲害的叫賣點子來賺取小組獎金。", scores: { E: 2 } },
+                { text: "📝 乖乖記帳組：管理當天所有的零用錢、仔細規劃大家的排班表，並把每張收據清點好。", scores: { C: 2 } }
+            ], next: "q2"
+        },
+        {
+            id: "q2",
+            title: "🔍 第 2 題：放學後的神祕新社團",
+            text: "路過社團辦公室，有兩個新成立的社團正在極力招募新社員，你對哪一個更有興趣？",
+            type: "choice",
+            options: [
+                { text: "🤖 機器人拆解研究社：學習動手拆解舊電器、觀察齒輪，甚至寫點小程式讓微型無人機飛起來！", scores: { I: 2 } },
+                { text: "💕 幸福社區陪伴社：一塊走進銀髮社區，溫暖地傾聽長輩的故事，並幫他們舉辦一場跨代派對。", scores: { S: 2 } }
+            ], next: "q3"
+        },
+        {
+            id: "q3",
+            title: "🧪 第 3 題：班際科學趣味競賽",
+            text: "下週有一場好玩的科學實作競賽，在緊湊的準備期間，你通常會主動幫忙什麼？",
+            type: "choice",
+            options: [
+                { text: "🥽 實驗核心手：最喜歡動手操作量杯、混合試劑，能夠非常精準地觀察化學的神奇反應。", scores: { R: 1, I: 1 } },
+                { text: "📣 首席發表家：負責上台對評審報告，擅長把生硬的科學原理，用非常生動、可愛的方式說給大家聽。", scores: { A: 1, E: 1 } },
+                { text: "📅 進度小管家：把每個人要做的事情做成清楚的表格，每天溫柔地提醒大家什麼時間該交報告。", scores: { C: 2 } }
+            ], next: "q4"
+        },
+        {
+            id: "q4",
+            title: "📖 第 4 題：圖書館的午后微風",
+            text: "難得有一個不需要考試的自由下午。走進挑高的圖書館，你會不由自主走向哪一類的書架？",
+            type: "choice",
+            options: [
+                { text: "🌌 宇宙未解之謎：探索神奇的黑洞原理、神祕的古文明，或者大自然的奇幻奧秘。", scores: { I: 2 } },
+                { text: "🧠 心靈魔法與溝通：理解為什麼人們會難過、學習如何用溫暖的話語安慰哭泣的朋友。", scores: { S: 2 } }
+            ], next: "q5"
+        },
+        {
+            id: "q5",
+            title: "🍱 第 5 題：午餐時間的「零剩食」挑戰",
+            text: "學校正在推行「零剩食小特攻」計畫，但偏偏今天午餐的蔬菜是你最討厭吃的。你會怎麼做？",
+            type: "choice",
+            options: [
+                { text: "🥦 硬著頭皮吃光光！然後上網研究如何把這些廚餘做成香香的有機肥料，幫校園花圃施肥。", scores: { I: 1, SDG_Env: 2 } },
+                { text: "🏆 找朋友發起「空盤大作戰」趣味計分挑戰，挑戰誰剩得最少，贏的人可以得到特製榮譽小貼紙。", scores: { E: 1, SDG_Eco: 2 } },
+                { text: "💬 乖乖吃完，並找廚房阿姨聊天，反映同學們不愛吃的原因，幫忙設計更受歡迎的新菜單。", scores: { S: 1, SDG_Soc: 2 } }
+            ], next: "q6"
+        },
+        {
+            id: "q6",
+            title: "🧣 第 6 題：寒風中的露宿老爺爺",
+            text: "冬天到了，火車站旁的角落多了一位無家可歸的流浪漢老爺爺。看著他挨凍，你的直覺想法是？",
+            type: "choice",
+            options: [
+                { text: "🎒 物資募集小隊：迅速在班上和鄰間發起物資募集，把家裡用不到的保暖衣物和乾糧送到爺爺手上。", scores: { S: 2, SDG_Soc: 2 } },
+                { text: "🔍 聯絡超能幫手：上網查資料，找出當地的社福團體或社會局叔叔阿姨，請他們提供長期的安心居住協助。", scores: { I: 1, C: 1, SDG_Soc: 2 } },
+                { text: "🎨 文創彩色貼紙義賣：和夥伴一起動手繪製可愛的文創贴紙進行義賣，用賺到的錢幫爺爺買熱騰騰的便當。", scores: { A: 1, E: 1, SDG_Eco: 2 } }
+            ], next: "q7"
+        },
+        {
+            id: "q7",
+            title: "🌲 第 7 題：神祕大森林的改建大戰",
+            text: "社區後山有一片好漂亮的原始野生森林，有建商打算砍光樹木蓋水上樂園，你參加了說明會，會支持哪方？",
+            type: "choice",
+            options: [
+                { text: "🐦 生態保護派：支持完全保留！動手做小鳥的家和昆蟲旅館，規劃一條生態步道，讓大家保護大自然。", scores: { R: 1, SDG_Env: 2 } },
+                { text: "🍓 綠色循環派：支持微型改建！只蓋用木頭搭的低碳青創市集，專門賣在地小農的草莓和蔬菜，幫青年賺錢。", scores: { E: 1, SDG_Eco: 2 } }
+            ], next: "q8"
+        },
+        {
+            id: "q8",
+            title: "💼 第 8 題：大公司的綠色實習考驗",
+            text: "長大後你進入科技公司實習。主管要你挑選產品材料：A材料超級便宜但會變成微塑料污染大海；B材料是全環保再生料但成本很高。你會怎麼提案？",
+            type: "choice",
+            options: [
+                { text: "💡 堅持選B材料！並且用感人的設計把「守護海龜的家」包裝成品牌故事，吸引愛地球的客群。", scores: { A: 1, SDG_Env: 2 } },
+                { text: "♻️ 提出「舊玩具舊機回購制」：答應客戶未來回收舊機就能折價，回收的零件能重複用，降低環保材料的成本。", scores: { E: 1, C: 1, SDG_Eco: 2 } }
+            ], next: "q9"
+        },
+        {
+            id: "q9",
+            title: "⚖️ 第 9 題：辦公室的同工同酬守護者",
+            text: "你發現公司裡一位非常溫柔且厲害的女主管，她的薪水竟然比同職等、做同樣事情的男主管還要少。你會？",
+            type: "choice",
+            options: [
+                { text: "📊 數據小超人：做出一份整齊又漂亮的職務績效報告，用客觀的事實，跟人資部門提議修正薪水福利。", scores: { C: 2, SDG_Soc: 2 } },
+                { text: "📣 平權倡議家：私下找同事一塊舉辦愛心連署，並在公司舉辦「職場性別平等與多元包容」貼紙日。", scores: { S: 1, E: 1, SDG_Soc: 2 } }
+            ], next: "q10"
+        },
+        {
+            id: "q10",
+            title: "🧸 第 10 題：神奇公平貿易棉花的抉擇",
+            text: "公司要買棉花做衣服，如果選偏遠貧困小村莊的「公平貿易棉花」，雖然貴一點，但能保證那邊的童工不用天天辛苦工作、可以開心地去上學。你會：",
+            type: "choice",
+            options: [
+                { text: "🌍 充滿愛心推動：在服飾官網設計一個精緻的故事專區，讓所有買衣服的人看見這筆訂單如何幫小朋友上學。", scores: { S: 1, A: 1, SDG_Soc: 2 } },
+                { text: "🔍 厲害的查帳員：認真審查這家棉花供應商的財務報告，確保每一分愛心錢都有實質交到村民手上，沒有被騙。", scores: { C: 2, SDG_Eco: 2 } }
+            ], next: "q11"
+        },
+        {
+            id: "q11",
+            title: "☁️ 第 11 題：魔法碳中和任務",
+            text: "政府規定每家公司都要執行「減碳大作戰」。你被選為這個超級專案的隊長，你的作戰方針是？",
+            type: "choice",
+            options: [
+                { text: "☀️ 改造工廠硬體：把屋頂全部鋪滿閃亮亮的太陽能發電板，設計雨水回收冷卻系統，天天觀察排碳量。", scores: { R: 1, I: 1, SDG_Env: 2 } },
+                { text: "💻 全面雲端數位化：把全公司所有紙張公文、印章全部作廢！改成超級流暢的雲端自動化核銷流程。", scores: { C: 2, SDG_Eco: 2 } }
+            ], next: "q12"
+        },
+        {
+            id: "q12",
+            title: "👵 第 12 題：金色黃昏的成就大傳承",
+            text: "到了快樂退休的年紀，你累積了好多好多的社會影響力！你想用什麼方法把經驗傳給下一代的小朋友？",
+            type: "choice",
+            options: [
+                { text: "📚 寫一本圖文並茂的「地球永續魔法大百科」，或者架設一個完全免費、開放的環境監測數據網站。", scores: { I: 2, SDG_Env: 1 } },
+                { text: "🌱 成立一個「青年夢想創業種子基金會」，親自當導師教有志於改變社會問題的年輕創業者。", scores: { E: 1, S: 1, SDG_Eco: 1 } }
+            ], next: "result"
+        }
+    ]
+};
+
+const riasecMap = {
+    R: { name: "實用型 (Realistic)", desc: "熱愛用動手做、喜歡與機械、工具跟大自然當朋友的熱血實踐家。" },
+    I: { name: "研究型 (Investigative)", desc: "超級喜歡問為什麼、著迷於邏輯、解謎與科學真理的聰明思考者。" },
+    A: { name: "藝術型 (Artistic)", desc: "不喜歡一成不變、靈感滿滿，喜歡用美學與創意表達自己的可愛織夢者。" },
+    S: { name: "社會型 (Social)", desc: "充滿同理心、善解人意，最喜歡用關懷與溫暖陪伴世界每個角落的守護天使。" },
+    E: { name: "企業型 (Enterprising)", desc: "很有遠見與說服力、勇敢熱情，能帶領大家一起衝刺新目標的超級小隊長。" },
+    C: { name: "事務型 (Conventional)", desc: "井然有序、非常細心，能夠在複雜的規則與數據裡建立起安全感的小把關。" }
+};
+
+let state = {
+    playerName: "未知的小冒險家",
+    avatar: { hair: 0, cloth: 0, item: 0, bg: 0 },
+    currentSceneIndex: 0,
+    scores: { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0, SDG_Env: 0, SDG_Soc: 0, SDG_Eco: 0 }
+};
+
+const contentDiv = document.getElementById("game-content");
+const titleH1 = document.getElementById("game-title");
+const progressDiv = document.getElementById("progress");
+const progressText = document.getElementById("progress-text");
+const charSprite = document.getElementById("char-sprite");
+const charTag = document.getElementById("char-tag");
+
+// 🛠️ 修正邏輯：創角面板時「只顯示名字」，不把未選好的配件硬塞在名字後面
+function updateVisualAvatar(isFinalResult = false) {
+    charSprite.innerHTML = visualMap.emojis[state.avatar.hair];
+    charSprite.style.background = visualMap.bgColors[state.avatar.bg];
+    
+    if (isFinalResult) {
+        // 最後結果頁才加上完整的稱號配備
+        charTag.innerText = `✨ ${state.playerName} ✕ [${avatarOptions.item[state.avatar.item]}] ✨`;
+    } else {
+        // 創角跟中間遊戲階段，只乾淨地顯示玩家輸入的名字
+        charTag.innerText = state.playerName;
+    }
+}
+
+function changeAvatarVal(key, direction) {
+    const max = avatarOptions[key].length;
+    state.avatar[key] = (state.avatar[key] + direction + max) % max;
+    document.getElementById(`val-${key}`).innerText = avatarOptions[key][state.avatar[key]];
+    updateVisualAvatar();
+}
+
+function syncInputName() {
+    const val = document.getElementById("name-input").value.trim();
+    state.playerName = val || "未知的小冒險家";
+    updateVisualAvatar();
+}
+
+function renderScene() {
+    const scene = gameData.scenes[state.currentSceneIndex];
+    if (!scene) return;
+
+    const currentQuestionNum = state.currentSceneIndex;
+    const totalQuestions = gameData.scenes.length - 1;
+    progressText.innerText = `${currentQuestionNum} / ${totalQuestions}`;
+    progressDiv.style.width = `${(currentQuestionNum / totalQuestions) * 100}%`;
+
+    titleH1.innerText = scene.title;
+    
+    if (scene.type === "creator") {
+        progressText.innerText = `0 / ${totalQuestions}`;
+        
+        contentDiv.innerHTML = `
+            <div id="story-text">${scene.text}</div>
+            <div style="margin-bottom:15px;">
+                <input type="text" id="name-input" placeholder="替角色取個小代號吧..." oninput="syncInputName()" value="${state.playerName === '未知的小冒險家' ? '' : state.playerName}">
+            </div>
+            <div class="avatar-creator">
+                <div class="creator-row">
+                    <span class="creator-label">💇 換個髮型</span>
+                    <div class="selector-box">
+                        <button class="nav-btn" onclick="changeAvatarVal('hair', -1)">◀</button>
+                        <span class="current-val" id="val-hair">${avatarOptions.hair[state.avatar.hair]}</span>
+                        <button class="nav-btn" onclick="changeAvatarVal('hair', 1)">▶</button>
+                    </div>
+                </div>
+                <div class="creator-row">
+                    <span class="creator-label">👚 挑件衣服</span>
+                    <div class="selector-box">
+                        <button class="nav-btn" onclick="changeAvatarVal('cloth', -1)">◀</button>
+                        <span class="current-val" id="val-cloth">${avatarOptions.cloth[state.avatar.cloth]}</span>
+                        <button class="nav-btn" onclick="changeAvatarVal('cloth', 1)">▶</button>
+                    </div>
+                </div>
+                <div class="creator-row">
+                    <span class="creator-label">🎒 隨身小配件</span>
+                    <div class="selector-box">
+                        <button class="nav-btn" onclick="changeAvatarVal('item', -1)">◀</button>
+                        <span class="current-val" id="val-item">${avatarOptions.item[state.avatar.item]}</span>
+                        <button class="nav-btn" onclick="changeAvatarVal('item', 1)">▶</button>
+                    </div>
+                </div>
+                <div class="creator-row">
+                    <span class="creator-label">🎨 靈魂小底色</span>
+                    <div class="selector-box">
+                        <button class="nav-btn" onclick="changeAvatarVal('bg', -1)">◀</button>
+                        <span class="current-val" id="val-bg">${avatarOptions.bg[state.avatar.bg]}</span>
+                        <button class="nav-btn" onclick="changeAvatarVal('bg', 1)">▶</button>
+                    </div>
+                </div>
+            </div>
+            <button class="action-btn" onclick="saveAvatarAndGo('${scene.next}')">準備好了！人生重塑降臨 🌟</button>
+        `;
+        updateVisualAvatar();
+    } 
+    else if (scene.type === "choice") {
+        contentDiv.innerHTML = `<div id="story-text">${scene.text}</div>`;
+        const optionsWrapper = document.createElement("div");
+        optionsWrapper.className = "options-container";
+        
+        scene.options.forEach(opt => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.innerText = opt.text;
+            btn.onclick = () => {
+                for (let key in opt.scores) {
+                    state.scores[key] += opt.scores[key];
+                }
+                advance(scene.next);
+            };
+            optionsWrapper.appendChild(btn);
+        });
+        contentDiv.appendChild(optionsWrapper);
+    }
+}
+
+function saveAvatarAndGo(nextId) {
+    const inputVal = document.getElementById("name-input").value.trim();
+    state.playerName = inputVal || "匿名的冒險家";
+    updateVisualAvatar();
+    advance(nextId);
+}
+
+function advance(nextId) {
+    if (nextId === "result") {
+        showResult();
+    } else {
+        state.currentSceneIndex = gameData.scenes.findIndex(s => s.id === nextId);
+        renderScene();
+    }
+}
+
+function showResult() {
+    progressDiv.style.width = "100%";
+    progressText.innerText = "完成囉！";
+    titleH1.innerText = "🌸 專屬你的永續冒險繪本 🌸";
+    
+    // 更新為帶有配備稱號的最終預覽
+    updateVisualAvatar(true);
+    document.getElementById("avatar-preview-zone").style.background = "linear-gradient(135deg, #FFFDF9, #FFE5EC)";
+
+    // 計算 RIASEC 最高分
+    const riasecKeys = ['R', 'I', 'A', 'S', 'E', 'C'];
+    let maxRiasecKey = 'S';
+    let maxRiasecScore = -1;
+    riasecKeys.forEach(k => {
+        if(state.scores[k] > maxRiasecScore) {
+            maxRiasecScore = state.scores[k];
+            maxRiasecKey = k;
+        }
+    });
+
+    const sdgKeys = {
+        SDG_Env: "環境生態小特攻 (綠色守護)",
+        SDG_Soc: "社會平權小天使 (愛與正義)",
+        SDG_Eco: "經濟循環智慧王 (責任消費)"
+    };
+    let maxSdgKey = 'SDG_Env';
+    let maxSdgScore = -1;
+    for(let k in sdgKeys) {
+        if(state.scores[k] > maxSdgScore) {
+            maxSdgScore = state.scores[k];
+            maxSdgKey = k;
+        }
+    }
+
+    const myHair = avatarOptions.hair[state.avatar.hair];
+    const myCloth = avatarOptions.cloth[state.avatar.cloth];
+    const myItem = avatarOptions.item[state.avatar.item];
+    const myBg = avatarOptions.bg[state.avatar.bg];
+
+    let jobTitle = "";
+    let storyText = "";
+    
+    if(maxRiasecKey === 'R' || maxRiasecKey === 'I') {
+        jobTitle = "智慧地球永續工程師 🔬";
+        storyText = `在大數據的星空下，帶著「${myBg}」溫柔氣場的 ${state.playerName} 誕生了！你頂著超可愛的「${myHair}」，穿著舒適的「${myCloth}」，手腕上閃閃發光的是你的重要配備「${myItem}」。\n\n一路上遇到學校餐盤大剩食、北極熊沒地方住、或者是複雜的減碳危機時，你總是理智又冷靜地決定要「動手升級硬體」和「用開源程式算數據」。你成功證明了，就算世界充滿困難，只要有顆聰明的腦袋和厲害的科技，就能幫地球搭建起最漂亮的零污染綠色城堡！`;
+    } else if(maxRiasecKey === 'A' || maxRiasecKey === 'S') {
+        jobTitle = "美學創意永續倡議家 🎨";
+        storyText = `帶著重要配件「${myItem}」出發的 ${state.playerName}，一路上散發著滿滿的溫暖與體貼。你換上了很有自信的「${myHair}」，身穿代表愛與包容的「${myCloth}」。\n\n比起冷冰冰的報表，你更容易注意到角落挨凍的老爺爺、或是辛苦工作卻拿不到公平薪水的主管阿姨。你拒絕假裝沒看到！反而運用驚人的靈感與美麗的創意，舉辦彩色貼紙義賣與平權日活動，把死板的環境問題變成大家都想參加的嘉年華。世界因為你的善良，變得亮晶晶的！`;
+    } else {
+        jobTitle = "循環經濟超能綠色經理人 🪙";
+        storyText = `身穿帥氣又有幹勁的「${myCloth}」，${state.playerName} 擁有一顆充滿智慧的資源統籌大腦！你手中的「${myItem}」密密麻麻記錄著公平貿易的小故事。\n\n你用超厲害的商業邏輯打破了「做環保一定會虧錢」的刻板偏見！不管是面對童工皮棉花，還是高成本的回收材料，你精準設計出「逆向押金大回購」和「透明化誠實行銷法」，成功拯救環境的同時還幫公司賺了大錢。你就是全宇宙都在尋找的綠色商業引航者！`;
+    }
+
+    contentDiv.innerHTML = `
+        <p style="text-align: left; font-size:15px; font-weight:bold;">🎉 太棒了！由你的 12 個關鍵抉擇編織出來的專屬童話繪本誕生囉：</p>
+        
+        <div class="result-card">
+            <h3 style="margin-top:0; color:var(--text-dark); font-size:19px; border-bottom:3px dashed #FFDAC1; padding-bottom:10px;">📖 《${state.playerName} 的神奇永續冒險日記》</h3>
+            
+            <div class="badge-container">
+                <span class="badge avatar">外觀：${myHair}</span>
+                <span class="badge type">性格：${riasecMap[maxRiasecKey].name}</span>
+                <span class="badge job">未來職涯：${jobTitle}</span>
+                <span class="badge sdg">關注焦點：${maxSdgKey === 'SDG_Env' ? '綠色環境🌿' : maxSdgKey === 'SDG_Soc' ? '社會溫暖🤝' : '循環經濟🪙'}</span>
+            </div>
+            
+            <p style="line-height: 1.8; font-size: 15px; color:#554466; background:#FFFDF9; padding:20px; border-radius:18px; border:2px solid #FFE5EC; white-space: pre-line;">
+                <strong>【你身上的特殊天賦】</strong><br>${riasecMap[maxRiasecKey].desc}<br><br>
+                <strong>【寫給你的繪本故事】</strong><br>${storyText}
+            </p>
+            
+            <div class="chart-section">
+                <h4 style="margin:0 0 10px 0; color:#6C5B7B;">📊 你的三維度永續大能量條</h4>
+                <div class="chart-row">
+                    <div class="chart-label">🌿 綠色環境守護力 (Environmental)</div>
+                    <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:${Math.min((state.scores.SDG_Env/8)*100, 100)}%; background:#B5EAD7;"></div></div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-label">🤝 社會人權平權力 (Social Justice)</div>
+                    <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:${Math.min((state.scores.SDG_Soc/8)*100, 100)}%; background:#C7CEEA;"></div></div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-label">🪙 經濟責任循環力 (Circular Economy)</div>
+                    <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:${Math.min((state.scores.SDG_Eco/8)*100, 100)}%; background:#FFDAC1;"></div></div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="action-btn" onclick="restartGame()">重新開啟另一段神奇人生（Restart） 🚀</button>
+    `;
+}
+
+function restartGame() {
+    state = {
+        playerName: "未知的小冒險家",
+        avatar: { hair: 0, cloth: 0, item: 0, bg: 0 },
+        currentSceneIndex: 0,
+        scores: { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0, SDG_Env: 0, SDG_Soc: 0, SDG_Eco: 0 }
+    };
+    renderScene();
+}
+
+// 首次啟動遊戲
+renderScene();
+</script>
+
+</body>
+</html>
